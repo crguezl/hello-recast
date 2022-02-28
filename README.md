@@ -68,7 +68,6 @@ console.log(`input code:\n${code}`);
 // Parse the code using an interface similar to require("esprima").parse.
 const ast = recast.parse(code);
 ```
-Now do *whatever* you want to `ast`. Really, anything at all!
 
 See [ast-types](https://github.com/benjamn/ast-types) (especially the [def/core.ts](https://github.com/benjamn/ast-types/blob/master/def/core.ts)) module for a thorough overview of the `ast` API.
 
@@ -99,12 +98,13 @@ add.params.push(add.params.shift());
 ```
 
 When you finish manipulating the AST, let `recast.print` work its magic:
+
 ```js
 const output = recast.print(ast).code;
 console.log(`output code:\n${output}`);
 ```
 
-The `output` string now looks exactly like this, weird formatting and all:
+The output is:
 
 ```js
 ➜  hello-recast git:(master) node hello-recast.js 
@@ -127,48 +127,57 @@ The magic of Recast is that it reprints only those parts of the syntax tree that
 recast.print(recast.parse(source)).code === source
 ```
 
-Whenever Recast cannot reprint a modified node using the original source code, it falls back to using a generic pretty printer. So the worst that can happen is that your changes trigger some harmless reformatting of your code.
+Whenever Recast cannot reprint a modified node using the original source code,
+it falls back to using a generic pretty printer. 
+
+So the worst that can happen is that your changes trigger some harmless reformatting of your code.
 
 If you really don't care about preserving the original formatting, you can access the pretty printer directly:
+
 ```js
 var output = recast.prettyPrint(ast, { tabWidth: 2 }).code;
 ```
-And here's the exact `output`:
-```js
-var add = function(b, a) {
-  return a + b;
-}
-```
-Note that the weird formatting was discarded, yet the behavior and abstract structure of the code remain the same.
 
-Using a different parser
----
+## Using a different parser
 
-By default, Recast uses the [Esprima JavaScript parser](https://www.npmjs.com/package/esprima) when you call `recast.parse(code)`. While Esprima supports almost all modern ECMAScript syntax, you may want to use a different parser to enable TypeScript or Flow syntax, or just because you want to match other compilation tools you might be using.
+By default, Recast uses the [Esprima JavaScript parser](https://www.npmjs.com/package/esprima) when you call `recast.parse(code)`. 
 
-In order to get any benefits from Recast's conservative pretty-printing, **it is very important that you continue to call `recast.parse`** (rather than parsing the AST yourself using a different parser), and simply instruct `recast.parse` to use a different parser:
+While Esprima supports almost all modern ECMAScript syntax, you may want to use a different parser to enable TypeScript or Flow syntax, or just because you want to match other compilation tools you might be using.
+
+In order to get any benefits from Recast's conservative pretty-printing, **it is very important that you continue to call `recast.parse`** (rather than parsing the AST yourself using a different parser), and simply instruct `recast.parse` to use a different parser (See file [change-parser.js](change-parser.js)):
 
 ```js
-const acornAst = recast.parse(source, {
+const ast = recast.parse(code, {
   parser: require("acorn")
 });
 ```
 
-Why is this so important? When you call `recast.parse`, it makes a shadow copy of the AST before returning it to you, giving every copied AST node a reference back to the original through a special `.original` property. This information is what enables `recast.print` to detect where the AST has been modified, so that it can preserve formatting for parts of the AST that were not modified.
+Why is this so important? When you call `recast.parse`, 
 
-Any `parser` object that supports a `parser.parse(source)` method will work here; however, if your parser requires additional options, you can always implement your own `parse` method that invokes your parser with custom options:
+1. it makes a shadow copy of the AST before returning it to you, giving every copied AST node a reference back to the original through a special `.original` property. 
+2. This information is what enables `recast.print` **to detect where the AST has been modified**, so that it can preserve formatting for parts of the AST that were not modified.
+
+Any `parser` object that supports a `parser.parse(source)` method will work here; 
+however, 
+
+### If your parser requires additional options
+
+if your parser requires additional options
+you can always implement your own `parse` method that invokes your parser with custom options:
 
 ```js
 const acornAst = recast.parse(source, {
   parser: {
     parse(source) {
       return require("acorn").parse(source, {
-        // additional options
+        // my additional options
       });
     }
   }
 });
 ```
+
+### Preconfigured parsers
 
 To take some of the guesswork out of configuring common parsers, Recast provides [several preconfigured parsers](https://github.com/benjamn/recast/tree/master/parsers), so you can parse TypeScript (for example) without worrying about the configuration details:
 

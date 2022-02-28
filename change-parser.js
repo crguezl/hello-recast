@@ -39,6 +39,7 @@ ast.program.body[0] = B.variableDeclaration("const", [
 // Switch the parameters order:
 add.params.push(add.params.shift());
 
-const output = recast.print(ast).code;
+//const output = recast.print(ast).code;
+const output = recast.prettyPrint(ast, { tabWidth: 2 }).code
 
 console.log(`output code:\n${output}`);
