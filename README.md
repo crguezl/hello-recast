@@ -204,7 +204,11 @@ One of the coolest consequences of tracking and reusing original source code dur
 With every `slice`, `join`, and re-`indent`-ation, the reprinting process maintains exact knowledge of which character sequences are original, and where in the original source they came from.
 
 **All you have to think about is how to manipulate the syntax tree**, and 
-Recast will give you a [source map](https://github.com/mozilla/source-map) 
+Recast will give you a source map
+
+* [Source Map Revision 3 Report](https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit)
+* [source map](https://github.com/mozilla/source-map) npm module to generate and consume the source map format
+
 in exchange for specifying the names of your source file(s) and the desired name of the map:
 
 ```js
