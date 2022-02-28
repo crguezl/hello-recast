@@ -1,0 +1,23 @@
+{
+  "name": "jscodeshift-learning",
+  "version": "1.0.0",
+  "description": "learning jscodeshift",
+  "scripts": {
+    "test": "node change-parser.js",
+    "debug": "node --inspect-brk change-parser.js",
+    "console": "jscodeshift -t remove-calls-to-console/remove-consoles.js remove-calls-to-console/remove-consoles-input.js -d -p",
+    "deprecated": "jscodeshift -t replacing-imported-method-calls/deprecated.js replacing-imported-method-calls/deprecated-input.js -d -p",
+    "signature": "jscodeshift -t signature-change/signature-change.js signature-change/signature-change-input.js -d -p",
+    "arrow": "jscodeshift -t function-expression-to-arrow-expression/function-expression-to-arrow-function-expression.js function-expression-to-arrow-expression/function-expression-to-arrow-function-expression-input.js -d -p"
+  },
+  "keywords": [
+    "ull",
+    "ast"
+  ],
+  "author": "Casiano Rodriguez Leon <crguezl@ull.edu.es> (https://crguezl.github.io/)",
+  "license": "ISC",
+  "dependencies": {
+    "acorn": "^8.7.0",
+    "recast": "^0.20.5"
+  }
+}
