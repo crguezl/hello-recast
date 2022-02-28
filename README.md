@@ -4,9 +4,9 @@
 2. to form, fashion, or arrange again.
 3. to remodel or reconstruct (a literary work, document, sentence, etc.).
 4. to supply (a theater or opera work) with a new cast.
+5. 
 
-Installation
----
+## Recast Installation
 
 From NPM:
 
@@ -19,8 +19,11 @@ From GitHub:
     cd recast
     npm install .
 
-Import style
----
+## Import style
+
+Remember to add the entry 
+`"type": "module"`
+in your `package.json`if using node.js
 
 Recast is designed to be imported using **named** imports:
 ```js
