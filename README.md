@@ -4,7 +4,7 @@
 2. to form, fashion, or arrange again.
 3. to remodel or reconstruct (a literary work, document, sentence, etc.).
 4. to supply (a theater or opera work) with a new cast.
-5. 
+5. To *rec* the AST
 
 ## Recast Installation
 
