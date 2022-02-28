@@ -205,7 +205,7 @@ Only Esprima is installed by default when Recast is installed.
 
 One of the coolest consequences of tracking and reusing original source code during reprinting is that it's pretty easy to generate a high-resolution mapping between the original code and the generated code—completely automatically!
 
-With every `slice`, `join`, and re-`indent`-ation, the reprinting process maintains exact knowledge of which character sequences are original, and where in the original source they came from.
+With every `slice`, `join`, and re-indentation, the reprinting process maintains exact knowledge of which character sequences are original, and where in the original source they came from.
 
 **All you have to think about is how to manipulate the syntax tree**, and 
 Recast will give you a source map
@@ -237,6 +237,7 @@ See
 * [Source Map Revision 3 Report](https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit)
 * [source map](https://github.com/mozilla/source-map) npm module to generate and consume the source map format
 * See also [Compiling to JavaScript, and Debugging with Source Maps](https://hacks.mozilla.org/2013/05/compiling-to-javascript-and-debugging-with-source-maps/) by Nick Fitzgerald, Robert Nyman
+* [Source Maps from top to bottom](https://indepth.dev/posts/1230/source-maps-from-top-to-bottom)
 
 Note that you are free to mix and match syntax trees parsed from different source files, 
 and the resulting source map will automatically keep track of the separate file origins for you.
@@ -251,6 +252,30 @@ This approach leads to higher-resolution debugging in modern browsers, at the ex
 
 All Recast API functions take second parameter with configuration options, documented in
 [options.ts](https://github.com/benjamn/recast/blob/master/lib/options.ts)
+
+```js
+ {
+    tabWidth: +get("tabWidth"),
+    useTabs: !!get("useTabs"),
+    reuseWhitespace: !!get("reuseWhitespace"),
+    lineTerminator: get("lineTerminator"),
+    wrapColumn: Math.max(get("wrapColumn"), 0),
+    sourceFileName: get("sourceFileName"),
+    sourceMapName: get("sourceMapName"),
+    sourceRoot: get("sourceRoot"),
+    inputSourceMap: get("inputSourceMap"),
+    parser: get("esprima") || get("parser"),
+    range: get("range"),
+    tolerant: get("tolerant"),
+    quote: get("quote"),
+    trailingComma: get("trailingComma"),
+    arrayBracketSpacing: get("arrayBracketSpacing"),
+    objectCurlySpacing: get("objectCurlySpacing"),
+    arrowParensAlways: get("arrowParensAlways"),
+    flowObjectCommas: get("flowObjectCommas"),
+    tokens: !!get("tokens"),
+  };
+```
 
 ## Motivation
 

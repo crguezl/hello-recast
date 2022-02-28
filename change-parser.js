@@ -1,4 +1,5 @@
 const recast = require("recast");
+const util = require("util");
 
 const code = `
   function add(a, b) {
@@ -44,7 +45,9 @@ ast.program.body[0] = B.variableDeclaration("const", [
 // Switch the parameters order:
 add.params.push(add.params.shift());
 
-//const output = recast.print(ast).code;
-const output = recast.prettyPrint(ast, { tabWidth: 2 }).code
+const result = recast.print(ast, {sourceMapName: "map.json"});
+output = result.code;
+//const output = recast.prettyPrint(ast, { tabWidth: 2 }).code
 
 console.log(`output code:\n${output}`);
+console.log(`map: ${util.inspect(result.map)}`);
