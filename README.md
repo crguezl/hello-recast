@@ -166,11 +166,11 @@ if your parser requires additional options
 you can always implement your own `parse` method that invokes your parser with custom options:
 
 ```js
-const acornAst = recast.parse(source, {
+const espreeAst = recast.parse(source, {
   parser: {
     parse(source) {
-      return require("acorn").parse(source, {
-        // my additional options
+      return require("espree").parse(source, {
+        // my additional espree options
       });
     }
   }
@@ -187,16 +187,26 @@ const tsAst = recast.parse(source, {
 });
 ```
 
-**Note:** Some of these parsers import npm packages that Recast does not directly depend upon, so please be aware you may have to run `npm install babylon@next` to use the `typescript`, `flow`, or `babylon` parsers, or `npm install acorn` to use the `acorn` parser. Only Esprima is installed by default when Recast is installed.
+**Note:** Some of these parsers import npm packages that Recast does not directly depend upon, so please be aware you may have to run 
 
-Source maps
----
+* `npm install babylon@next` to use the 
+  * `typescript`, 
+  * `flow`, or 
+  * `babylon` parsers 
+* `npm install acorn` to use the `acorn` parser. 
+  
+Only Esprima is installed by default when Recast is installed.
+
+## Source maps
 
 One of the coolest consequences of tracking and reusing original source code during reprinting is that it's pretty easy to generate a high-resolution mapping between the original code and the generated code—completely automatically!
 
 With every `slice`, `join`, and re-`indent`-ation, the reprinting process maintains exact knowledge of which character sequences are original, and where in the original source they came from.
 
-All you have to think about is how to manipulate the syntax tree, and Recast will give you a [source map](https://github.com/mozilla/source-map) in exchange for specifying the names of your source file(s) and the desired name of the map:
+**All you have to think about is how to manipulate the syntax tree**, and 
+Recast will give you a [source map](https://github.com/mozilla/source-map) 
+in exchange for specifying the names of your source file(s) and the desired name of the map:
+
 ```js
 var result = recast.print(transform(recast.parse(source, {
   sourceFileName: "source.js"

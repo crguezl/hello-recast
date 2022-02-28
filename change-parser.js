@@ -11,8 +11,13 @@ console.log(`input code:\n${code}`);
 // Let us transform the order of the parameters and convert it in a functionExpression
 
 // Parse the code using an interface similar to require("acorn").parse.
+/*
 const ast = recast.parse(code, {
   parser: require("acorn")
+});
+*/
+const ast = recast.parse(code, {
+  parser: require("recast/parsers/flow")
 });
 
 const add = ast.program.body[0];
