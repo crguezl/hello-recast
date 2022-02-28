@@ -6,11 +6,14 @@ const code = `
 `
 ;
 
-console.log(`input code:\n${code}`);
 // Let us transform the order of the parameters and convert it in a functionExpression
 
 // Parse the code using an interface similar to require("esprima").parse.
 const ast = recast.parse(code);
+
+console.log(`The generated code from the AST is equal to the original code!`)
+console.log(recast.print(ast).code === code);
+
 const add = ast.program.body[0];
 
 debugger;
@@ -37,4 +40,6 @@ add.params.push(add.params.shift());
 
 const output = recast.print(ast).code;
 
+console.log(`input code:\n${code}`);
 console.log(`output code:\n${output}`);
+

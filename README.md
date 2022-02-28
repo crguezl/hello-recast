@@ -26,6 +26,7 @@ Remember to add the entry
 in your `package.json`if using node.js
 
 Recast is designed to be imported using **named** imports:
+
 ```js
 import { parse, print } from "recast";
 console.log(print(parse(source)).code);
@@ -43,23 +44,26 @@ const recast = require("recast");
 console.log(recast.print(recast.parse(source)).code);
 ```
 
-Usage
----
+## Usage
 
-Recast exposes two essential interfaces, one for parsing JavaScript code (`require("recast").parse`) and the other for reprinting modified syntax trees (`require("recast").print`).
+Recast exposes two essential interfaces, 
+
+1. one for parsing JavaScript code (`require("recast").parse`) and 
+2. the other for reprinting modified syntax trees (`require("recast").print`).
 
 Here's a simple but non-trivial example of how you might use `.parse` and `.print`:
-```js
-import * as recast from "recast";
 
-// Let's turn this function declaration into a variable declaration.
-const code = [
-  "function add(a, b) {",
-  "  return a +",
-  "    // Weird formatting, huh?",
-  "    b;",
-  "}"
-].join("\n");
+```js
+const recast = require("recast");
+const code = `
+  function add(a, b) {
+    return a * b;
+  }
+`
+;
+
+console.log(`input code:\n${code}`);
+// Let us transform the order of the parameters and convert it in a functionExpression
 
 // Parse the code using an interface similar to require("esprima").parse.
 const ast = recast.parse(code);
@@ -67,47 +71,62 @@ const ast = recast.parse(code);
 Now do *whatever* you want to `ast`. Really, anything at all!
 
 See [ast-types](https://github.com/benjamn/ast-types) (especially the [def/core.ts](https://github.com/benjamn/ast-types/blob/master/def/core.ts)) module for a thorough overview of the `ast` API.
+
 ```js
 // Grab a reference to the function declaration we just parsed.
 const add = ast.program.body[0];
+debugger;
 
-// Make sure it's a FunctionDeclaration (optional).
 const n = recast.types.namedTypes;
 n.FunctionDeclaration.assert(add);
 
 // If you choose to use recast.builders to construct new AST nodes, all builder
 // arguments will be dynamically type-checked against the Mozilla Parser API.
-const b = recast.types.builders;
+const B = recast.types.builders;
 
 // This kind of manipulation should seem familiar if you've used Esprima or the
 // Mozilla Parser API before.
-ast.program.body[0] = b.variableDeclaration("var", [
-  b.variableDeclarator(add.id, b.functionExpression(
+ast.program.body[0] = B.variableDeclaration("const", [
+  B.variableDeclarator(add.id, B.functionExpression(
     null, // Anonymize the function expression.
     add.params,
     add.body
   ))
 ]);
 
-// Just for fun, because addition is commutative:
+// Switch the parameters order:
 add.params.push(add.params.shift());
 ```
+
 When you finish manipulating the AST, let `recast.print` work its magic:
 ```js
 const output = recast.print(ast).code;
+console.log(`output code:\n${output}`);
 ```
+
 The `output` string now looks exactly like this, weird formatting and all:
+
 ```js
-var add = function(b, a) {
-  return a +
-    // Weird formatting, huh?
-    b;
-}
+➜  hello-recast git:(master) node hello-recast.js 
+input code:
+
+  function add(a, b) {
+    return a * b;
+  }
+
+output code:
+
+  const add = function(b, a) {
+    return a * b;
+  };
 ```
+
 The magic of Recast is that it reprints only those parts of the syntax tree that you modify. In other words, the following identity is guaranteed:
+
 ```js
 recast.print(recast.parse(source)).code === source
 ```
+
 Whenever Recast cannot reprint a modified node using the original source code, it falls back to using a generic pretty printer. So the worst that can happen is that your changes trigger some harmless reformatting of your code.
 
 If you really don't care about preserving the original formatting, you can access the pretty printer directly:
